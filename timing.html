@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <title>Temperatures</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+  <script src="timing.js"></script>
+  <style type="text/css">
+    span.finished { cursor: pointer; color: blue; text-decoration: underline; }
+  </style>
+</head>
+<body ng-app="temperature" ng-controller="MainCtrl">
+<div class="row">
+<div class="col-md-8 col-md-offset-3">
+<div class="page-header"> 
+  <h1>Temperatures</h1>
+  <a href="profile.html?{{eci}}">profile</a>
+</div>
+  <h3>Current Temperature</h3>
+  <div>
+	  {{temperatures[temperatures.length-1].temperature.temperatureF}}
+	  <span>fahrenheit</span>
+  </div>
+
+  <h3>Temperature Violations</h3>
+  <div ng-repeat="threshold_violation in threshold_violations | orderBy: '-ordinal'">
+	  {{threshold_violation.temperature.temperatureF}}
+	  <span>fahrenheit</span>
+  </div>
+
+  <h3>Temperature History</h3>
+  <div ng-repeat="temperature in temperatures | orderBy: '-ordinal'">
+    {{temperature.temperature.temperatureF}} 
+    <span>fahrenheit</span>
+  </div>
+</div>
+</div>
+</body>
+</html>
