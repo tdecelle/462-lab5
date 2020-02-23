@@ -1,8 +1,8 @@
 ruleset sensor_profile {
 	
 	meta {
-		provides get_profile
-		shares get_profile
+		provides get_profile, get_threshold, get_sms
+		shares get_profile, get_threshold, get_sms
 	}
 
 	global {
@@ -11,8 +11,16 @@ ruleset sensor_profile {
 				"sms": ent:sms.defaultsTo("19134019979"),
 				"location": ent:sensor_location.defaultsTo("None"),
 				"name": ent:sensor_name.defaultsTo("None"),
-				"high_temperature": ent:high_temperature.defaultsTo("80")
+				"high_temperature": ent:temperature_threshold.defaultsTo(80)
 			}
+		}
+
+		get_threshold = function() {
+			ent:temperature_threshold.defaultsTo(80)
+		}
+
+		get_sms = function() {
+			ent:sms.defaultsTo("19134019979")
 		}
 	}
 
@@ -23,7 +31,7 @@ ruleset sensor_profile {
 			ent:sensor_location := event:attr("location").klog("sensor_location").head()
 			ent:sensor_name := event:attr("name").klog("sensor_name").head()
 			ent:sms := event:attr("sms").defaultsTo(ent:sms.defaultsTo("19134019979")).klog("sms").head()
-			ent:high_temperature := event:attr("high_temperature").defaultsTo(ent:high_temperature.defaultsTo("80")).klog("high_temperature").head()
+			ent:temperature_threshold := event:attr("high_temperature").as("Number").defaultsTo(ent:temperature_threshold.defaultsTo(80)).klog("high_temperature").head()
 		}
 	}
 }

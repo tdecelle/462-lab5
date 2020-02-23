@@ -7,6 +7,8 @@ ruleset wovyn_base {
 
 		use module temperature_store 
 
+		use module sensor_profile
+
 		shares __testing
 	}
 
@@ -19,8 +21,6 @@ ruleset wovyn_base {
 			]
 		}
 
-		temperature_threshold = 80
-		to_notify_number = "19134019979"
 		twilio_number = "12017482171"
 	}
 
@@ -53,15 +53,19 @@ ruleset wovyn_base {
 		
 		fired {
 			raise wovyn event "threshold_violation"
-				attributes event:attrs if temperatureF > ent:temperature_threshold.defaultsTo(temperature_threshold)
+				attributes event:attrs if temperatureF > sensor_profile:get_threshold()
 		}
 	}
 
 	rule threshold_violation {
 		select when wovyn threshold_violation
 
-		twilio:send_sms(to_notify_number,
-						ent:sms.defaultsTo(twilio_number),
-						"Temperature above threshold: " + ent:temperature_threshold.defaultsTo(temperature_threshold))
+		pre {
+			threshold = sensor_profile:get_threshold()
+		} 
+
+		twilio:send_sms(sensor_profile:get_sms(),
+						twilio_number,
+						"Temperature above threshold: " + threshold)
 	}
 }
